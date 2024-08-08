@@ -67,4 +67,29 @@ class LocalNotifications {
       payload: 'item x',
     );
   }
+
+  Future<void> showNotificationCV(
+      {required String title, required String body}) async {
+    const AndroidNotificationDetails androidPlatformChannelSpecifics =
+        AndroidNotificationDetails(
+      'your_channel_id',
+      'Tecny App',
+      channelDescription: 'your_channel_description',
+      importance: Importance.max,
+      priority: Priority.high,
+      // Configura el ícono aquí
+      icon: '@mipmap/logo',
+    );
+
+    const NotificationDetails platformChannelSpecifics =
+        NotificationDetails(android: androidPlatformChannelSpecifics);
+
+    await flutterLocalNotificationsPlugin.show(
+      0, // Notification ID
+      title,
+      body,
+      platformChannelSpecifics,
+      payload: 'open_downloads',
+    );
+  }
 }

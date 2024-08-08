@@ -99,15 +99,6 @@ class _ProposalSentCardState extends State<ProposalSentCard> {
                   ),
                   const SizedBox(height: 2),
                   Text(
-                    's',
-                    // widget.proposal['type_proposal'],
-                    style: TextStyle(
-                      color: Theme.of(context).colorScheme.primary,
-                      fontSize: 13,
-                    ),
-                  ),
-                  const SizedBox(height: 2),
-                  Text(
                     widget.proposal['service_request']['address'] ??
                         'No Address',
                     style: TextStyle(

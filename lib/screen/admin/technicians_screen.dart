@@ -1,10 +1,14 @@
 import 'dart:convert';
+import 'dart:io';
 import 'package:flutter/material.dart';
+import 'package:permission_handler/permission_handler.dart';
+import 'package:provider/provider.dart';
 import 'package:tecnyapp_flutter/config.dart';
 import 'package:tecnyapp_flutter/screen/admin/add_technical_screen.dart';
 import 'package:tecnyapp_flutter/service/auth/auth_service.dart';
 import 'package:tecnyapp_flutter/service/auth/user_data_service.dart';
 import 'package:tecnyapp_flutter/utils/app_sanck_bar.dart';
+import 'package:tecnyapp_flutter/utils/local_notifications.dart';
 import 'package:tecnyapp_flutter/widgets/drawer/my_drawer.dart';
 import 'package:tecnyapp_flutter/widgets/label_top.dart';
 import 'package:tecnyapp_flutter/widgets/label_top_select.dart';
@@ -30,7 +34,9 @@ class TechniciansScreenState extends State<TechniciansScreen> {
   List<dynamic> technicians = [];
   late Map<String, dynamic> userData;
   bool existTechnical = false;
-  final socket = IO.io('https://serviciosmap-backend-production.up.railway.app',
+  bool cv = false;
+
+  final socket = IO.io('http://10.0.2.2:3032',
       IO.OptionBuilder().setTransports(['websocket']).enableForceNew().build());
 
   @override
@@ -50,7 +56,7 @@ class TechniciansScreenState extends State<TechniciansScreen> {
     socket.onConnect((_) {
       socket.emit('registerClient', userData['id']);
     });
-    socket.on('usersOnline', (data) {
+    socket.on('technicalLocation', (data) {
       if (mounted) {
         setState(() {
           usersOnline = data;
@@ -125,6 +131,77 @@ class TechniciansScreenState extends State<TechniciansScreen> {
         AppSnackbar.showError(
             context, 'Error al eliminar el usuario ${response.body}');
       }
+    }
+  }
+
+  Future<void> downloadFile(
+      BuildContext context, String url, String fileName) async {
+    final status = await Permission.storage.request();
+    setState(() {
+      cv = true;
+    });
+    if (status.isGranted) {
+      final response = await http.get(Uri.parse(url));
+
+      if (response.statusCode == 200) {
+        // Usa el directorio de descargas
+        Directory? downloadsDirectory =
+            Directory('/storage/emulated/0/Download');
+        if (!await downloadsDirectory.exists()) {
+          await downloadsDirectory.create(recursive: true);
+        }
+
+        String filePath = '${downloadsDirectory.path}/$fileName';
+        final file = File(filePath);
+        await file.writeAsBytes(response.bodyBytes);
+
+        if (context.mounted) {
+          final localNotifications =
+              Provider.of<LocalNotifications>(context, listen: false);
+
+          localNotifications.showNotificationCV(
+            title: 'Descarga completa',
+            body:
+                'El cv ha sido descargado exitosamente en la carpeta de descargas',
+          );
+        }
+      }
+    } else if (status.isDenied) {
+      // Muestra un diálogo solicitando permisos
+      showDialog(
+        // ignore: use_build_context_synchronously
+        context: context,
+        builder: (context) => AlertDialog(
+          title: const Text('Permiso de almacenamiento necesario'),
+          content: const Text(
+              'Esta aplicación necesita permisos de almacenamiento para funcionar correctamente.'),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.of(context).pop(),
+              style: TextButton.styleFrom(
+                backgroundColor: const Color.fromARGB(234, 223, 193, 10),
+              ),
+              child: const Text(
+                'Cancelar',
+                style: TextStyle(color: Colors.white),
+              ),
+            ),
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+                openAppSettings();
+              },
+              style: TextButton.styleFrom(
+                backgroundColor: const Color.fromARGB(234, 223, 193, 10),
+              ),
+              child: const Text(
+                'Ir a ajustes',
+                style: TextStyle(color: Colors.white),
+              ),
+            ),
+          ],
+        ),
+      );
     }
   }
 
@@ -336,8 +413,12 @@ class TechniciansScreenState extends State<TechniciansScreen> {
                                       width: 15,
                                       height: 15,
                                       decoration: BoxDecoration(
-                                          color: usersOnline.contains(
-                                                  technical['id'].toString())
+                                          color: usersOnline.any(
+                                            (user) =>
+                                                user['technical']['id']
+                                                    .toString() ==
+                                                technical['id'].toString(),
+                                          )
                                               ? const Color.fromARGB(
                                                   255,
                                                   20,
@@ -351,14 +432,54 @@ class TechniciansScreenState extends State<TechniciansScreen> {
                                     ),
                                     const SizedBox(width: 5),
                                     Text(
-                                      usersOnline.contains(
-                                              technical['id'].toString())
+                                      usersOnline.any(
+                                        (user) =>
+                                            user['technical']['id']
+                                                .toString() ==
+                                            technical['id'].toString(),
+                                      )
                                           ? 'Conectado'
                                           : 'Desconectado',
                                     ),
                                   ],
                                 ),
-                                const SizedBox(height: 10),
+                                const SizedBox(height: 5),
+                                !cv
+                                    ? TextButton(
+                                        onPressed: () async {
+                                          final url =
+                                              'https://servicios-map-serverimage-production.up.railway.app/cv/${technical['cv']}';
+                                          final fileName = technical[
+                                              'cv']; // Nombre del archivo basado en el nombre del CV
+                                          await downloadFile(
+                                              context, url, fileName);
+                                          setState(() {
+                                            cv = false;
+                                          });
+                                        },
+                                        style: TextButton.styleFrom(
+                                          padding: const EdgeInsets.symmetric(
+                                              vertical: 7, horizontal: 15),
+                                          minimumSize: Size.zero,
+                                          backgroundColor: Theme.of(context)
+                                              .colorScheme
+                                              .onPrimary,
+                                          shape: RoundedRectangleBorder(
+                                            borderRadius:
+                                                BorderRadius.circular(8),
+                                          ),
+                                        ),
+                                        child: const Text(
+                                          'descargar cv',
+                                          style: TextStyle(
+                                            fontSize: 14,
+                                            color: Color.fromARGB(
+                                                255, 255, 255, 255),
+                                          ),
+                                        ),
+                                      )
+                                    : const CircularProgressIndicator(),
+                                const SizedBox(height: 5),
                                 Row(
                                   children: [
                                     TextButton(

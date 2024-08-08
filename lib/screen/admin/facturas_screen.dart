@@ -201,6 +201,9 @@ class _FacturasScreenState extends State<FacturasScreen> {
                         onPressed: () {
                           Navigator.of(context).pop();
                           _uploadImage();
+                          setState(() {
+                            image = null;
+                          });
                         },
                         child: const Text('Guardar'),
                       ),
@@ -305,7 +308,7 @@ class _FacturasScreenState extends State<FacturasScreen> {
                                       color: Theme.of(context)
                                           .colorScheme
                                           .inverseSurface,
-                                      fontSize: 18,
+                                      fontSize: 15,
                                     ),
                                   ),
                                   const SizedBox(height: 2),
@@ -315,7 +318,7 @@ class _FacturasScreenState extends State<FacturasScreen> {
                                       color: Theme.of(context)
                                           .colorScheme
                                           .inverseSurface,
-                                      fontSize: 18,
+                                      fontSize: 16,
                                     ),
                                   ),
                                   Text(
@@ -355,8 +358,8 @@ class _FacturasScreenState extends State<FacturasScreen> {
                                             style: TextStyle(
                                               color: Theme.of(context)
                                                   .colorScheme
-                                                  .onSurface,
-                                              fontSize: 15,
+                                                  .onPrimary,
+                                              fontSize: 13,
                                             ),
                                           ),
                                           const SizedBox(height: 2),
@@ -365,8 +368,8 @@ class _FacturasScreenState extends State<FacturasScreen> {
                                             style: TextStyle(
                                               color: Theme.of(context)
                                                   .colorScheme
-                                                  .onSurface,
-                                              fontSize: 15,
+                                                  .onPrimary,
+                                              fontSize: 13,
                                             ),
                                           ),
                                         ],
@@ -399,13 +402,14 @@ class _FacturasScreenState extends State<FacturasScreen> {
                                                   child: const Text(
                                                     'Cargar',
                                                     style:
-                                                        TextStyle(fontSize: 15),
+                                                        TextStyle(fontSize: 13),
                                                   ),
                                                 ),
                                               )
                                             : const Text(
                                                 'factura enviada',
                                                 style: TextStyle(
+                                                  fontSize: 13,
                                                   color: Color.fromARGB(
                                                       234, 223, 193, 10),
                                                 ),

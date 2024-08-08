@@ -12,13 +12,14 @@ class ProposalsList extends StatefulWidget {
   final Map<String, dynamic>? userData;
   final Map<String, dynamic> serviceRequest;
   final Function validSharingLocation;
+  final IO.Socket socket;
 
-  const ProposalsList({
-    super.key,
-    required this.userData,
-    required this.serviceRequest,
-    required this.validSharingLocation,
-  });
+  const ProposalsList(
+      {super.key,
+      required this.userData,
+      required this.serviceRequest,
+      required this.validSharingLocation,
+      required this.socket});
 
   @override
   ProposalsListState createState() => ProposalsListState();
@@ -27,39 +28,16 @@ class ProposalsList extends StatefulWidget {
 class ProposalsListState extends State<ProposalsList>
     with WidgetsBindingObserver {
   List<dynamic> proposals = [];
-  final socket = IO.io('https://serviciosmap-backend-production.up.railway.app',
-      IO.OptionBuilder().setTransports(['websocket']).enableForceNew().build());
+
   bool _isInForeground = true;
 
   @override
   void initState() {
     super.initState();
-    initializeSocket();
     WidgetsBinding.instance.addObserver(this);
-
     fetchServiceRequest();
-  }
-
-  @override
-  void dispose() {
-    WidgetsBinding.instance.removeObserver(this);
-    socket.dispose();
-    super.dispose();
-  }
-
-  @override
-  void didChangeAppLifecycleState(AppLifecycleState state) {
-    setState(() {
-      _isInForeground = state == AppLifecycleState.resumed;
-    });
-  }
-
-  void initializeSocket() {
-    socket.onConnect((_) {
-      socket.emit('registerClient', widget.userData?['id']);
-    });
-
-    socket.on('newProposal', (data) {
+    widget.socket.on('newProposal', (data) {
+      fetchServiceRequest();
       if (!_isInForeground) {
         final localNotifications =
             Provider.of<LocalNotifications>(context, listen: false);
@@ -70,10 +48,22 @@ class ProposalsListState extends State<ProposalsList>
               'El tecnico ${data['name']} le envio una propuesta de s/.${data['cost_of_diagnosis']} ',
         );
       }
-      fetchServiceRequest();
     });
-    socket.on('sharingLocation', (data) {
+    widget.socket.on('sharingLocation', (data) {
       widget.validSharingLocation();
+    });
+  }
+
+  @override
+  void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
+    super.dispose();
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    setState(() {
+      _isInForeground = state == AppLifecycleState.resumed;
     });
   }
 
@@ -121,7 +111,7 @@ class ProposalsListState extends State<ProposalsList>
                 imageUrl: imageUrl,
                 proposal: proposal,
                 userData: widget.userData ?? {},
-                socket: socket,
+                socket: widget.socket,
                 serviceRequest: widget.serviceRequest,
                 fetchServiceRequest: fetchServiceRequest,
               );

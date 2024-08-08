@@ -216,9 +216,6 @@ class _ReportScreenState extends State<ReportScreen> {
     if (status.isGranted) {
       final response = await http.get(Uri.parse(url));
 
-      print('Response status: ${response.statusCode}');
-      print('Response body length: ${response.bodyBytes.length}');
-
       if (response.statusCode == 200) {
         // Usa el directorio de descargas
         Directory? downloadsDirectory =

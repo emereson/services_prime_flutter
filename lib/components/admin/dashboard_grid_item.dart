@@ -1,21 +1,21 @@
 import 'package:flutter/material.dart';
 
 class DashboardGridItem extends StatelessWidget {
-  final String imagePath;
+  final IconData imagePath; // Cambiado a IconData
   final String title;
-  final VoidCallback onTap; // Añadido para manejar la navegación
+  final VoidCallback onTap;
 
   const DashboardGridItem({
     super.key,
     required this.imagePath,
     required this.title,
-    required this.onTap, // Añadido para manejar la navegación
+    required this.onTap,
   });
 
   @override
   Widget build(BuildContext context) {
     return InkWell(
-      onTap: onTap, // Navega a otra pantalla cuando se hace clic
+      onTap: onTap,
       borderRadius: BorderRadius.circular(8.0),
       child: Container(
         padding: const EdgeInsets.all(10),
@@ -27,11 +27,10 @@ class DashboardGridItem extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Flexible(
-              child: Image.asset(
+              child: Icon(
                 imagePath,
-                height: 70,
-                fit: BoxFit.contain,
-              ),
+                size: 60,
+              ), // Usando directamente el IconData
             ),
             const SizedBox(height: 10),
             Text(

@@ -64,7 +64,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
             ),
             children: [
               DashboardGridItem(
-                imagePath: 'assets/4312382.png',
+                imagePath: Icons.engineering_rounded,
                 title: 'Tecnicos',
                 onTap: () {
                   Navigator.push(
@@ -75,7 +75,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                 },
               ),
               DashboardGridItem(
-                imagePath: 'assets/4312382.png',
+                imagePath: Icons.boy,
                 title: 'Clientes',
                 onTap: () {
                   Navigator.push(
@@ -86,7 +86,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                 },
               ),
               DashboardGridItem(
-                imagePath: 'assets/4312382.png',
+                imagePath: Icons.assignment_rounded,
                 title: 'Servicios solicitados',
                 onTap: () {
                   Navigator.push(
@@ -97,7 +97,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                 },
               ),
               DashboardGridItem(
-                imagePath: 'assets/4312382.png',
+                imagePath: Icons.auto_stories,
                 title: 'Reclamos',
                 onTap: () {
                   Navigator.push(
@@ -108,7 +108,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                 },
               ),
               DashboardGridItem(
-                imagePath: 'assets/4312382.png',
+                imagePath: Icons.content_paste_sharp,
                 title: 'cargar boletas y facturas',
                 onTap: () {
                   Navigator.push(
@@ -119,7 +119,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                 },
               ),
               DashboardGridItem(
-                imagePath: 'assets/4312382.png',
+                imagePath: Icons.handyman_sharp,
                 title: 'Configurar materiales',
                 onTap: () {
                   Navigator.push(
@@ -130,7 +130,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                 },
               ),
               DashboardGridItem(
-                imagePath: 'assets/4312382.png',
+                imagePath: Icons.report,
                 title: 'Reportes',
                 onTap: () {
                   Navigator.push(

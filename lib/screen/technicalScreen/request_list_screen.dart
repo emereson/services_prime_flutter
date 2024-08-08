@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
@@ -26,7 +27,7 @@ class _RequestListScreenState extends State<RequestListScreen> {
   bool isLocationRetrieved = false;
   bool _viewScreen = false;
   late GoogleMapController _mapController;
-  final socket = IO.io('https://serviciosmap-backend-production.up.railway.app',
+  final socket = IO.io('http://10.0.2.2:3032',
       IO.OptionBuilder().setTransports(['websocket']).enableForceNew().build());
   late Map<String, dynamic> userData = {};
 
@@ -42,8 +43,8 @@ class _RequestListScreenState extends State<RequestListScreen> {
         });
       }
     });
-    socket.onConnect((_) {
-      socket.emit('registerClient', userData['id']);
+    Timer.periodic(const Duration(seconds: 10), (Timer timer) {
+      sendLocation(_myLocation);
     });
   }
 
@@ -60,6 +61,9 @@ class _RequestListScreenState extends State<RequestListScreen> {
         userData = jsonDecode(userJsonString);
       });
       validSharingLocation();
+      socket.onConnect((_) {
+        socket.emit('registerClient', userData['id']);
+      });
     }
   }
 

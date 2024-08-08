@@ -157,111 +157,116 @@ class _DetailsRequestServiceState extends State<DetailsRequestService> {
                     color: Theme.of(context).colorScheme.onPrimary,
                     borderRadius: BorderRadius.circular(8),
                   ),
-                  child: ExpansionTile(
-                    expandedCrossAxisAlignment: CrossAxisAlignment.center,
-                    title: const Text(
-                      'Materiales de reparacion',
-                      style: TextStyle(
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                    children: [
-                      Container(
-                        margin: const EdgeInsets.all(5),
-                        padding: const EdgeInsets.all(15),
-                        decoration: BoxDecoration(
-                          color: Theme.of(context).colorScheme.tertiary,
-                          borderRadius: BorderRadius.circular(8),
-                        ),
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          crossAxisAlignment: CrossAxisAlignment.start,
+                  child: proformaData['type_service'] != null
+                      ? ExpansionTile(
+                          expandedCrossAxisAlignment: CrossAxisAlignment.center,
+                          title: const Text(
+                            'Materiales de reparacion',
+                            style: TextStyle(
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
                           children: [
-                            Text(
-                              '${proformaData['type_service']}/${proformaData['category']}/${proformaData['products']}',
-                              style: TextStyle(
-                                color:
-                                    Theme.of(context).colorScheme.onSecondary,
-                                fontSize: 16,
+                            Container(
+                              margin: const EdgeInsets.all(5),
+                              padding: const EdgeInsets.all(15),
+                              decoration: BoxDecoration(
+                                color: Theme.of(context).colorScheme.tertiary,
+                                borderRadius: BorderRadius.circular(8),
                               ),
-                            ),
-                            const SizedBox(height: 10),
-                            const Text(
-                              'tipos:',
-                              style: TextStyle(
-                                color: Color.fromARGB(255, 191, 191, 191),
-                                fontSize: 16,
+                              child: Column(
+                                mainAxisAlignment: MainAxisAlignment.start,
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    '${proformaData['type_service']}/${proformaData['category']}/${proformaData['products']}',
+                                    style: TextStyle(
+                                      color: Theme.of(context)
+                                          .colorScheme
+                                          .onSecondary,
+                                      fontSize: 16,
+                                    ),
+                                  ),
+                                  const SizedBox(height: 10),
+                                  const Text(
+                                    'tipos:',
+                                    style: TextStyle(
+                                      color: Color.fromARGB(255, 191, 191, 191),
+                                      fontSize: 16,
+                                    ),
+                                  ),
+                                  const SizedBox(height: 5),
+                                  Column(children: [
+                                    if (proformaData['systems'] != null)
+                                      ...proformaData['systems']
+                                          .map<Widget>((system) => Column(
+                                                mainAxisAlignment:
+                                                    MainAxisAlignment.start,
+                                                crossAxisAlignment:
+                                                    CrossAxisAlignment.start,
+                                                children: [
+                                                  Text(
+                                                    system['system'],
+                                                  ),
+                                                  Column(
+                                                    children: [
+                                                      ...system[
+                                                              'systemOptionPrices']
+                                                          .map<Widget>(
+                                                              (options) => Row(
+                                                                    children: [
+                                                                      Text(
+                                                                        options[
+                                                                            'option_name'],
+                                                                        style:
+                                                                            TextStyle(
+                                                                          color: Theme.of(context)
+                                                                              .colorScheme
+                                                                              .inversePrimary,
+                                                                        ),
+                                                                      ),
+                                                                      const SizedBox(
+                                                                          width:
+                                                                              10),
+                                                                      Text(
+                                                                        's/.${options['price']}',
+                                                                        style:
+                                                                            TextStyle(
+                                                                          color: Theme.of(context)
+                                                                              .colorScheme
+                                                                              .inversePrimary,
+                                                                        ),
+                                                                      )
+                                                                    ],
+                                                                  ))
+                                                          .toList(),
+                                                    ],
+                                                  ),
+                                                  const SizedBox(height: 10),
+                                                ],
+                                              ))
+                                          .toList(),
+                                  ]),
+                                  SizedBox(
+                                    width: double.infinity,
+                                    child: Text(
+                                      'TOTAL:     s/.${proformaData['total']}',
+                                      style: const TextStyle(fontSize: 18),
+                                      textAlign: TextAlign.center,
+                                    ),
+                                  ),
+                                  const SizedBox(height: 10),
+                                  SizedBox(
+                                    width: double.infinity,
+                                    child: Text(
+                                        'Descripción: ${proformaData['description']}'),
+                                  ),
+                                ],
                               ),
-                            ),
-                            const SizedBox(height: 5),
-                            Column(children: [
-                              if (proformaData['systems'] != null)
-                                ...proformaData['systems']
-                                    .map<Widget>((system) => Column(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.start,
-                                          crossAxisAlignment:
-                                              CrossAxisAlignment.start,
-                                          children: [
-                                            Text(
-                                              system['system'],
-                                            ),
-                                            Column(
-                                              children: [
-                                                ...system['systemOptionPrices']
-                                                    .map<Widget>((options) =>
-                                                        Row(
-                                                          children: [
-                                                            Text(
-                                                              options[
-                                                                  'option_name'],
-                                                              style: TextStyle(
-                                                                color: Theme.of(
-                                                                        context)
-                                                                    .colorScheme
-                                                                    .inversePrimary,
-                                                              ),
-                                                            ),
-                                                            const SizedBox(
-                                                                width: 10),
-                                                            Text(
-                                                              's/.${options['price']}',
-                                                              style: TextStyle(
-                                                                color: Theme.of(
-                                                                        context)
-                                                                    .colorScheme
-                                                                    .inversePrimary,
-                                                              ),
-                                                            )
-                                                          ],
-                                                        ))
-                                                    .toList(),
-                                              ],
-                                            ),
-                                            const SizedBox(height: 10),
-                                          ],
-                                        ))
-                                    .toList(),
-                            ]),
-                            SizedBox(
-                              width: double.infinity,
-                              child: Text(
-                                'TOTAL:     s/.${proformaData['total']}',
-                                style: const TextStyle(fontSize: 18),
-                                textAlign: TextAlign.center,
-                              ),
-                            ),
-                            const SizedBox(height: 10),
-                            SizedBox(
-                              width: double.infinity,
-                              child: Text(
-                                  'Descripción: ${proformaData['description']}'),
                             ),
                           ],
-                        ),
-                      ),
-                    ],
-                  ),
+                        )
+                      : const SizedBox.shrink(),
                 ),
                 const SizedBox(height: 10),
                 Container(
@@ -269,132 +274,146 @@ class _DetailsRequestServiceState extends State<DetailsRequestService> {
                     color: Theme.of(context).colorScheme.onPrimary,
                     borderRadius: BorderRadius.circular(8),
                   ),
-                  child: ExpansionTile(
-                    expandedCrossAxisAlignment: CrossAxisAlignment.center,
-                    title: const Text(
-                      'Fotos de la reparación',
-                      style: TextStyle(
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                    children: [
-                      Container(
-                        padding: const EdgeInsets.all(10),
-                        child: Column(
+                  child: repairsData.isNotEmpty
+                      ? ExpansionTile(
+                          expandedCrossAxisAlignment: CrossAxisAlignment.center,
+                          title: const Text(
+                            'Fotos de la reparación',
+                            style: TextStyle(
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
                           children: [
                             Container(
-                              decoration: BoxDecoration(
-                                color: Theme.of(context).colorScheme.tertiary,
-                                border: Border.all(
-                                  width: 1,
-                                  color: Theme.of(context).colorScheme.tertiary,
-                                ),
-                                borderRadius: BorderRadius.circular(8),
-                              ),
-                              child: ExpansionTile(
-                                title: const Text(
-                                  'Foto de inicio',
-                                  style: TextStyle(
-                                    fontWeight: FontWeight.bold,
-                                    color: Colors.white,
-                                  ),
-                                ),
+                              padding: const EdgeInsets.all(10),
+                              child: Column(
                                 children: [
-                                  ExpansionExistImg(
-                                    title: 'Panorámica',
-                                    imageUrls: [
-                                      repairsData['panorama_img_1'],
-                                      repairsData['panorama_img_2'],
-                                      repairsData['panorama_img_3']
-                                    ],
+                                  Container(
+                                    decoration: BoxDecoration(
+                                      color: Theme.of(context)
+                                          .colorScheme
+                                          .tertiary,
+                                      border: Border.all(
+                                        width: 1,
+                                        color: Theme.of(context)
+                                            .colorScheme
+                                            .tertiary,
+                                      ),
+                                      borderRadius: BorderRadius.circular(8),
+                                    ),
+                                    child: ExpansionTile(
+                                      title: const Text(
+                                        'Foto de inicio',
+                                        style: TextStyle(
+                                          fontWeight: FontWeight.bold,
+                                          color: Colors.white,
+                                        ),
+                                      ),
+                                      children: [
+                                        ExpansionExistImg(
+                                          title: 'Panorámica',
+                                          imageUrls: [
+                                            repairsData['panorama_img_1'],
+                                            repairsData['panorama_img_2'],
+                                            repairsData['panorama_img_3']
+                                          ],
+                                        ),
+                                        ExpansionExistImg(
+                                          title: 'Modelo',
+                                          imageUrls: [
+                                            repairsData['model_img_1'],
+                                            repairsData['model_img_2'],
+                                            repairsData['model_img_3']
+                                          ],
+                                        ),
+                                        ExpansionExistImg(
+                                          title: 'Averías',
+                                          imageUrls: [
+                                            repairsData['breakdowns_img_1'],
+                                            repairsData['breakdowns_img_2'],
+                                            repairsData['breakdowns_img_3']
+                                          ],
+                                        ),
+                                        const SizedBox(height: 10),
+                                      ],
+                                    ),
                                   ),
-                                  ExpansionExistImg(
-                                    title: 'Modelo',
-                                    imageUrls: [
-                                      repairsData['model_img_1'],
-                                      repairsData['model_img_2'],
-                                      repairsData['model_img_3']
-                                    ],
+                                  const SizedBox(height: 5),
+                                  Container(
+                                    decoration: BoxDecoration(
+                                      color: Theme.of(context)
+                                          .colorScheme
+                                          .tertiary,
+                                      border: Border.all(
+                                        width: 1,
+                                        color: Theme.of(context)
+                                            .colorScheme
+                                            .tertiary,
+                                      ),
+                                      borderRadius: BorderRadius.circular(8),
+                                    ),
+                                    child: ExpansionTile(
+                                      title: const Text(
+                                        'Foto de proceso',
+                                        style: TextStyle(
+                                          fontWeight: FontWeight.bold,
+                                          color: Colors.white,
+                                        ),
+                                      ),
+                                      children: [
+                                        ExpansionExistImg(
+                                          title: 'Panorámica',
+                                          imageUrls: [
+                                            repairsData['materials_img_1'],
+                                            repairsData['materials_img_2'],
+                                            repairsData['materials_img_3']
+                                          ],
+                                        ),
+                                        const SizedBox(height: 10),
+                                      ],
+                                    ),
                                   ),
-                                  ExpansionExistImg(
-                                    title: 'Averías',
-                                    imageUrls: [
-                                      repairsData['breakdowns_img_1'],
-                                      repairsData['breakdowns_img_2'],
-                                      repairsData['breakdowns_img_3']
-                                    ],
-                                  ),
-                                  const SizedBox(height: 10),
-                                ],
-                              ),
-                            ),
-                            const SizedBox(height: 5),
-                            Container(
-                              decoration: BoxDecoration(
-                                color: Theme.of(context).colorScheme.tertiary,
-                                border: Border.all(
-                                  width: 1,
-                                  color: Theme.of(context).colorScheme.tertiary,
-                                ),
-                                borderRadius: BorderRadius.circular(8),
-                              ),
-                              child: ExpansionTile(
-                                title: const Text(
-                                  'Foto de proceso',
-                                  style: TextStyle(
-                                    fontWeight: FontWeight.bold,
-                                    color: Colors.white,
-                                  ),
-                                ),
-                                children: [
-                                  ExpansionExistImg(
-                                    title: 'Panorámica',
-                                    imageUrls: [
-                                      repairsData['materials_img_1'],
-                                      repairsData['materials_img_2'],
-                                      repairsData['materials_img_3']
-                                    ],
-                                  ),
-                                  const SizedBox(height: 10),
-                                ],
-                              ),
-                            ),
-                            const SizedBox(height: 5),
-                            Container(
-                              decoration: BoxDecoration(
-                                color: Theme.of(context).colorScheme.tertiary,
-                                border: Border.all(
-                                  width: 1,
-                                  color: Theme.of(context).colorScheme.tertiary,
-                                ),
-                                borderRadius: BorderRadius.circular(8),
-                              ),
-                              child: ExpansionTile(
-                                title: const Text(
-                                  'Fotos finales',
-                                  style: TextStyle(
-                                    fontWeight: FontWeight.bold,
-                                    color: Colors.white,
-                                  ),
-                                ),
-                                children: [
-                                  ExpansionExistImg(
-                                    title: 'Panorámica',
-                                    imageUrls: [
-                                      repairsData['facility_img_1'],
-                                      repairsData['facility_img_2'],
-                                      repairsData['facility_img_3']
-                                    ],
-                                  ),
-                                  const SizedBox(height: 10),
+                                  const SizedBox(height: 5),
+                                  Container(
+                                    decoration: BoxDecoration(
+                                      color: Theme.of(context)
+                                          .colorScheme
+                                          .tertiary,
+                                      border: Border.all(
+                                        width: 1,
+                                        color: Theme.of(context)
+                                            .colorScheme
+                                            .tertiary,
+                                      ),
+                                      borderRadius: BorderRadius.circular(8),
+                                    ),
+                                    child: ExpansionTile(
+                                      title: const Text(
+                                        'Fotos finales',
+                                        style: TextStyle(
+                                          fontWeight: FontWeight.bold,
+                                          color: Colors.white,
+                                        ),
+                                      ),
+                                      children: [
+                                        ExpansionExistImg(
+                                          title: 'Panorámica',
+                                          imageUrls: [
+                                            repairsData['facility_img_1'],
+                                            repairsData['facility_img_2'],
+                                            repairsData['facility_img_3']
+                                          ],
+                                        ),
+                                        const SizedBox(height: 10),
+                                      ],
+                                    ),
+                                  )
                                 ],
                               ),
                             )
                           ],
-                        ),
-                      )
-                    ],
-                  ),
+                        )
+                      : const SizedBox.shrink(),
                 ),
                 const SizedBox(height: 10),
                 Container(
@@ -403,137 +422,159 @@ class _DetailsRequestServiceState extends State<DetailsRequestService> {
                     color: Theme.of(context).colorScheme.onPrimary,
                     borderRadius: BorderRadius.circular(8),
                   ),
-                  child: ExpansionTile(
-                    expandedCrossAxisAlignment: CrossAxisAlignment.center,
-                    title: const Text(
-                      'Gestion de pagos',
-                      style: TextStyle(
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                    children: [
-                      Container(
-                        width: double.infinity,
-                        margin: const EdgeInsets.all(5),
-                        padding: const EdgeInsets.all(15),
-                        decoration: BoxDecoration(
-                          color: Theme.of(context).colorScheme.tertiary,
-                          borderRadius: BorderRadius.circular(8),
-                        ),
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          crossAxisAlignment: CrossAxisAlignment.start,
+                  child: payments.isNotEmpty
+                      ? ExpansionTile(
+                          expandedCrossAxisAlignment: CrossAxisAlignment.center,
+                          title: const Text(
+                            'Gestion de pagos',
+                            style: TextStyle(
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
                           children: [
-                            Text(
-                              '${proformaData['type_service']}/${proformaData['category']}/${proformaData['products']}',
-                              style: TextStyle(
-                                color:
-                                    Theme.of(context).colorScheme.onSecondary,
-                                fontSize: 16,
-                              ),
-                            ),
-                            const SizedBox(height: 10),
-                            const Text(
-                              'Voucher del servicio',
-                              style: TextStyle(
-                                fontSize: 16,
-                              ),
-                            ),
-                            const SizedBox(height: 10),
                             Container(
                               width: double.infinity,
+                              margin: const EdgeInsets.all(5),
+                              padding: const EdgeInsets.all(15),
                               decoration: BoxDecoration(
                                 color: Theme.of(context).colorScheme.tertiary,
-                                border: Border.all(
-                                  color: Theme.of(context).colorScheme.tertiary,
-                                  width: 1,
-                                ),
+                                borderRadius: BorderRadius.circular(8),
                               ),
-                              child: payments['pay_img'] != null
-                                  ? Image.network(
-                                      '${Config.imgUrl}/image/${payments['pay_img']!}',
-                                      width: double.infinity,
-                                      fit: BoxFit.cover,
-                                    )
-                                  : const Text('No hay pago'),
-                            ),
-                            const SizedBox(height: 20),
-                            const Text(
-                              'Boleta o factura ',
-                              style: TextStyle(
-                                fontSize: 16,
-                              ),
-                            ),
-                            const SizedBox(height: 5),
-                            Container(
-                                width: double.infinity,
-                                decoration: BoxDecoration(
-                                  color: Theme.of(context).colorScheme.tertiary,
-                                  border: Border.all(
-                                    color:
-                                        Theme.of(context).colorScheme.tertiary,
-                                    width: 1,
+                              child: Column(
+                                mainAxisAlignment: MainAxisAlignment.start,
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    '${proformaData['type_service']}/${proformaData['category']}/${proformaData['products']}',
+                                    style: TextStyle(
+                                      color: Theme.of(context)
+                                          .colorScheme
+                                          .onSecondary,
+                                      fontSize: 16,
+                                    ),
                                   ),
-                                ),
-                                child: Center(
-                                  child: payments['factura_img'] != null
-                                      ? Image.network(
-                                          '${Config.imgUrl}/image/${payments['factura_img']!}',
-                                          width: double.infinity,
-                                          fit: BoxFit.cover,
-                                        )
-                                      : GestureDetector(
-                                          onTap: pickImage,
-                                          child: Container(
-                                            padding: const EdgeInsets.all(20),
-                                            decoration: BoxDecoration(
-                                              border: Border.all(
-                                                color: Theme.of(context)
-                                                    .colorScheme
-                                                    .primary,
-                                                width: 1,
-                                              ),
-                                            ),
-                                            child: image != null
-                                                ? Image.file(
-                                                    image!,
-                                                    width: double.infinity,
-                                                    fit: BoxFit.cover,
-                                                  )
-                                                : const Column(
-                                                    children: [
-                                                      Text(
-                                                        'Haga clic para cargar la factura, Formato Soportado .jpg, .png',
-                                                        textAlign:
-                                                            TextAlign.center,
-                                                      ),
-                                                      SizedBox(height: 20),
-                                                      Icon(Icons.add),
-                                                    ],
-                                                  ),
-                                          ),
-                                        ),
-                                )),
-                            const SizedBox(height: 20),
-                            payments['factura_img'] == null
-                                ? isLoading
-                                    ? const CircularProgressIndicator()
-                                    : Center(
-                                        child: MyButton(
-                                          colorButton: Theme.of(context)
+                                  const SizedBox(height: 10),
+                                  const Text(
+                                    'Voucher del servicio',
+                                    style: TextStyle(
+                                      fontSize: 16,
+                                    ),
+                                  ),
+                                  const SizedBox(height: 10),
+                                  Container(
+                                    width: double.infinity,
+                                    decoration: BoxDecoration(
+                                      color: Theme.of(context)
+                                          .colorScheme
+                                          .tertiary,
+                                      border: Border.all(
+                                        color: Theme.of(context)
+                                            .colorScheme
+                                            .tertiary,
+                                        width: 1,
+                                      ),
+                                    ),
+                                    child: payments['pay_img'] != null
+                                        ? Image.network(
+                                            '${Config.imgUrl}/image/${payments['pay_img']!}',
+                                            width: double.infinity,
+                                            fit: BoxFit.cover,
+                                          )
+                                        : const Text('No hay pago'),
+                                  ),
+                                  const SizedBox(height: 20),
+                                  const Text(
+                                    'Boleta o factura ',
+                                    style: TextStyle(
+                                      fontSize: 16,
+                                    ),
+                                  ),
+                                  const SizedBox(height: 5),
+                                  Container(
+                                      width: double.infinity,
+                                      decoration: BoxDecoration(
+                                        color: Theme.of(context)
+                                            .colorScheme
+                                            .tertiary,
+                                        border: Border.all(
+                                          color: Theme.of(context)
                                               .colorScheme
-                                              .onPrimary,
-                                          onTap: _uploadImage,
-                                          text: 'GUARDAR',
+                                              .tertiary,
+                                          width: 1,
                                         ),
-                                      )
-                                : const SizedBox(height: 0),
+                                      ),
+                                      child: Center(
+                                        child: payments['factura_img'] != null
+                                            ? Image.network(
+                                                '${Config.imgUrl}/image/${payments['factura_img']!}',
+                                                width: double.infinity,
+                                                fit: BoxFit.cover,
+                                              )
+                                            : GestureDetector(
+                                                onTap: pickImage,
+                                                child: Container(
+                                                  padding:
+                                                      const EdgeInsets.all(20),
+                                                  decoration: BoxDecoration(
+                                                    border: Border.all(
+                                                      color: Theme.of(context)
+                                                          .colorScheme
+                                                          .primary,
+                                                      width: 1,
+                                                    ),
+                                                  ),
+                                                  child: image != null
+                                                      ? Image.file(
+                                                          image!,
+                                                          width:
+                                                              double.infinity,
+                                                          fit: BoxFit.cover,
+                                                        )
+                                                      : const Column(
+                                                          children: [
+                                                            Text(
+                                                              'Haga clic para cargar la factura, Formato Soportado .jpg, .png',
+                                                              textAlign:
+                                                                  TextAlign
+                                                                      .center,
+                                                            ),
+                                                            SizedBox(
+                                                                height: 20),
+                                                            Icon(Icons.add),
+                                                          ],
+                                                        ),
+                                                ),
+                                              ),
+                                      )),
+                                  const SizedBox(height: 20),
+                                  payments['factura_img'] == null
+                                      ? isLoading
+                                          ? const CircularProgressIndicator()
+                                          : Center(
+                                              child: MyButton(
+                                                colorButton: Theme.of(context)
+                                                    .colorScheme
+                                                    .onPrimary,
+                                                onTap: _uploadImage,
+                                                text: 'GUARDAR',
+                                              ),
+                                            )
+                                      : const SizedBox(height: 0),
+                                ],
+                              ),
+                            ),
                           ],
-                        ),
-                      ),
-                    ],
-                  ),
+                        )
+                      : const SizedBox.shrink(),
                 ),
+                proformaData['type_service'] != null &&
+                        repairsData.isNotEmpty &&
+                        payments.isNotEmpty
+                    ? const SizedBox.shrink()
+                    : const Text(
+                        'No hay datos en el servicio solicitado',
+                        style: TextStyle(color: Colors.white),
+                      ),
               ],
             ),
           ),

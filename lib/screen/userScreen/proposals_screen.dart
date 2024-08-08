@@ -10,6 +10,8 @@ import 'package:tecnyapp_flutter/service/auth/user_data_service.dart';
 import 'package:tecnyapp_flutter/service/location/location_service.dart';
 import 'package:tecnyapp_flutter/widgets/drawer/my_drawer.dart';
 import 'package:tecnyapp_flutter/widgets/map/my_location_map.dart';
+// ignore: library_prefixes
+import 'package:socket_io_client/socket_io_client.dart' as IO;
 
 class ProposalsScreen extends StatefulWidget {
   const ProposalsScreen({super.key});
@@ -26,6 +28,8 @@ class _ProposalsScreenState extends State<ProposalsScreen> {
   bool isLocationRetrieved = false;
   bool _viewScreen = false;
   bool isLoading = false;
+  final socket = IO.io('https://serviciosmap-backend-production.up.railway.app',
+      IO.OptionBuilder().setTransports(['websocket']).enableForceNew().build());
 
   @override
   void initState() {
@@ -46,6 +50,12 @@ class _ProposalsScreenState extends State<ProposalsScreen> {
     super.dispose();
   }
 
+  void initializeSocket() {
+    socket.onConnect((_) {
+      socket.emit('registerClient', userData['id']);
+    });
+  }
+
   Future<void> _loadUserData() async {
     final userJsonString = await UserDataService.getUserData();
     if (userJsonString != null && mounted) {
@@ -54,6 +64,7 @@ class _ProposalsScreenState extends State<ProposalsScreen> {
         validSharingLocation();
         validExistService();
       });
+      initializeSocket();
     }
   }
 
@@ -64,7 +75,6 @@ class _ProposalsScreenState extends State<ProposalsScreen> {
 
     if (response.statusCode == 200 && mounted) {
       final jsonResponse = json.decode(response.body);
-
       setState(() {
         serviceRequest = jsonResponse['serviceRequest'];
       });
@@ -129,7 +139,8 @@ class _ProposalsScreenState extends State<ProposalsScreen> {
                       ),
                     ),
                     onPressed: () {
-                      Proposalfunctions.cancelService(serviceRequest, context);
+                      Proposalfunctions.cancelService(
+                          serviceRequest, socket, context);
                     },
                     child: const Text('Aceptar'),
                   ),
@@ -181,7 +192,8 @@ class _ProposalsScreenState extends State<ProposalsScreen> {
                     ProposalsList(
                         userData: userData,
                         serviceRequest: serviceRequest,
-                        validSharingLocation: validSharingLocation),
+                        validSharingLocation: validSharingLocation,
+                        socket: socket),
                     Positioned(
                       bottom: 0,
                       left: 0,

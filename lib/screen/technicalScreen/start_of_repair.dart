@@ -1,7 +1,6 @@
 import 'dart:convert';
 import 'dart:io';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:http/http.dart' as http;
 import 'package:tecnyapp_flutter/components/tecnichal/StartOfRepair/expansion_tile_img.dart';
@@ -154,7 +153,6 @@ class _StartOfRepairState extends State<StartOfRepair> {
         // Verifica el tipo antes de asignar
         final file = File(pickedFile.path);
         images[index] = file;
-        print('File path: ${file.path}');
       });
     }
   }
@@ -349,6 +347,7 @@ class _StartOfRepairState extends State<StartOfRepair> {
                       left: 0,
                       right: 0,
                       child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
                         children: [
                           MyButton(
                             colorButton:
@@ -382,6 +381,7 @@ class _StartOfRepairState extends State<StartOfRepair> {
                               }
                             },
                           ),
+                          const SizedBox(width: 10),
                           MyButton(
                             colorButton:
                                 Theme.of(context).colorScheme.onPrimary,

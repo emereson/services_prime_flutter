@@ -88,6 +88,13 @@ class ServiceListPanelState extends State<ServiceListPanel>
         getServices();
       }
     });
+
+    widget.socket.on('cancelService', (data) {
+      if (mounted) {
+        getProposals();
+        getServices();
+      }
+    });
   }
 
   void getServices() async {

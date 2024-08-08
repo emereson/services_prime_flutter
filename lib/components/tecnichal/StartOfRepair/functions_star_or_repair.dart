@@ -130,7 +130,10 @@ class FunctionsStarOrRepair {
     final response = await http.Response.fromStream(streamedResponse);
 
     if (response.statusCode == 200) {
-      print('object ${response.body}');
+      if (context.mounted) {
+        AppSnackbar.showError(
+            context, 'Las imagenes se guardaron correctamente');
+      }
     } else {
       final errorResponse = json.decode(response.body);
       throw Exception(
@@ -377,6 +380,8 @@ class FunctionsStarOrRepair {
     if (response.statusCode == 200) {
       socket.emit('sendPay', proposal['client_id']);
       onPayChanged(true);
+    } else {
+      print('${response.body}');
     }
   }
 }

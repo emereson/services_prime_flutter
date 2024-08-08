@@ -2,7 +2,7 @@ import 'dart:convert';
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:tecnyapp_flutter/config.dart';
-import 'package:tecnyapp_flutter/screen/userScreen/home_screen.dart';
+import 'package:tecnyapp_flutter/screen/userScreen/calification_screen.dart';
 import 'package:tecnyapp_flutter/service/auth/auth_service.dart';
 import 'package:tecnyapp_flutter/widgets/drawer/my_drawer.dart';
 import 'package:tecnyapp_flutter/service/auth/user_data_service.dart';
@@ -174,9 +174,10 @@ class _PaymentsState extends State<Payments> {
       socket.emit('sendPayment', proposal['user_id']);
 
       if (mounted) {
-        Navigator.pushReplacement(
+        Navigator.push(
           context,
-          MaterialPageRoute(builder: (context) => const HomeScreen()),
+          MaterialPageRoute(
+              builder: (context) => CalificationScreen(proposal: proposal)),
         );
       }
     }
