@@ -74,14 +74,6 @@ class _CustomerCardProposalState extends State<CustomerCardProposal> {
                 ),
                 const SizedBox(height: 2),
                 Text(
-                  's', // Reemplaza 's' con datos válidos o define claramente qué debería mostrar
-                  style: TextStyle(
-                    color: Theme.of(context).colorScheme.primary,
-                    fontSize: 13,
-                  ),
-                ),
-                const SizedBox(height: 2),
-                Text(
                   proposal['service_request']?['address'] ?? 'No Address',
                   style: TextStyle(
                     color: Theme.of(context).colorScheme.onSecondary,

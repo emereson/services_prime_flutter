@@ -92,8 +92,7 @@ class _StartOfRepairState extends State<StartOfRepair> {
           proposal = responseData['proposal'];
         });
         validExistProformaProposalId();
-        if (proposal['service_request']['repairs'][0] != null) {
-          print('${responseData['proposal']['service_request']['repairs'][0]}');
+        if (proposal['service_request']['repairs'].isNotEmpty) {
           panoramicaImages = [
             proposal['service_request']['repairs'][0]['panorama_img_1'],
             proposal['service_request']['repairs'][0]['panorama_img_2'],
@@ -354,8 +353,11 @@ class _StartOfRepairState extends State<StartOfRepair> {
                                 Theme.of(context).colorScheme.onPrimary,
                             text: "Guardar",
                             onTap: () async {
-                              if (proposal['service_request']['repairs'][0] !=
-                                  null) {
+                              setState(() {
+                                isLoading = true;
+                              });
+                              if (proposal['service_request']['repairs']
+                                  .isNotEmpty) {
                                 await FunctionsStarOrRepair.updateRepair(
                                     context,
                                     proposal['service_request']?['repairs']?[0]
@@ -377,8 +379,11 @@ class _StartOfRepairState extends State<StartOfRepair> {
                                     averiasImages,
                                     materialesImages,
                                     instalationImages,
-                                    onPayChanged);
+                                    getProposal);
                               }
+                              setState(() {
+                                isLoading = false;
+                              });
                             },
                           ),
                           const SizedBox(width: 10),

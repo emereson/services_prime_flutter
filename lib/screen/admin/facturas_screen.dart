@@ -134,83 +134,82 @@ class _FacturasScreenState extends State<FacturasScreen> {
       builder: (BuildContext context) {
         return AlertDialog(
           title: const Text('Cargar boleta / factura'),
-          content: const Text(' Adjuntar boleta o facrura'),
-          actions: [
-            Center(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  GestureDetector(
-                    onTap: pickImage,
-                    child: Container(
-                      padding: const EdgeInsets.all(20),
-                      decoration: BoxDecoration(
-                        border: Border.all(
-                          color: Theme.of(context).colorScheme.primary,
-                          width: 1,
-                        ),
+          content: SingleChildScrollView(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.start,
+              children: [
+                GestureDetector(
+                  onTap: pickImage,
+                  child: Container(
+                    padding: const EdgeInsets.all(20),
+                    decoration: BoxDecoration(
+                      border: Border.all(
+                        color: Theme.of(context).colorScheme.primary,
+                        width: 1,
                       ),
-                      child: image != null
-                          ? Image.file(
-                              image!,
-                              width: 300,
-                              fit: BoxFit.cover,
-                            )
-                          : const Column(
-                              children: [
-                                Text(
-                                  'Haga clic para cargar la factura, Formato Soportado .jpg, .png',
-                                  textAlign: TextAlign.center,
-                                ),
-                                SizedBox(height: 20),
-                                Icon(Icons.add),
-                              ],
-                            ),
+                    ),
+                    child: image != null
+                        ? Image.file(
+                            image!,
+                            width: 300,
+                            fit: BoxFit.cover,
+                          )
+                        : const Column(
+                            children: [
+                              Text(
+                                'Haga clic para cargar la factura, Formato Soportado .jpg, .png',
+                                textAlign: TextAlign.center,
+                              ),
+                              SizedBox(height: 20),
+                              Icon(Icons.add),
+                            ],
+                          ),
+                  ),
+                ),
+                const SizedBox(height: 20),
+              ],
+            ),
+          ),
+          actions: [
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                TextButton(
+                  style: TextButton.styleFrom(
+                    foregroundColor: Colors.white,
+                    backgroundColor: Colors.red,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(8),
                     ),
                   ),
-                  const SizedBox(height: 20),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      TextButton(
-                        style: TextButton.styleFrom(
-                          foregroundColor: Colors.white, // Color del texto
-                          backgroundColor: Colors.red, // Color de fondo
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(8),
-                          ),
-                        ),
-                        onPressed: () {
-                          Navigator.of(context).pop();
-                          setState(() {
-                            image = null;
-                          });
-                        },
-                        child: const Text('Cancelar'),
-                      ),
-                      const SizedBox(width: 30), // Espacio entre los botones
-                      TextButton(
-                        style: TextButton.styleFrom(
-                          foregroundColor: Colors.white, // Color del texto
-                          backgroundColor: Colors.green, // Color de fondo
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(8),
-                          ),
-                        ),
-                        onPressed: () {
-                          Navigator.of(context).pop();
-                          _uploadImage();
-                          setState(() {
-                            image = null;
-                          });
-                        },
-                        child: const Text('Guardar'),
-                      ),
-                    ],
-                  )
-                ],
-              ),
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                    setState(() {
+                      image = null;
+                    });
+                  },
+                  child: const Text('Cancelar'),
+                ),
+                const SizedBox(width: 30),
+                TextButton(
+                  style: TextButton.styleFrom(
+                    foregroundColor: Colors.white,
+                    backgroundColor: Colors.green,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                  ),
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                    _uploadImage();
+                    setState(() {
+                      image = null;
+                    });
+                  },
+                  child: const Text('Guardar'),
+                ),
+              ],
             ),
           ],
         );
@@ -224,7 +223,7 @@ class _FacturasScreenState extends State<FacturasScreen> {
       appBar: AppBar(
         backgroundColor: Theme.of(context).colorScheme.onPrimary,
         title: const Text(
-          "Bandeja servicios finalizados",
+          "Cargar boleta a servicios finalizados",
           style: TextStyle(fontSize: 20),
         ),
       ),
@@ -376,45 +375,57 @@ class _FacturasScreenState extends State<FacturasScreen> {
                                       ),
                                       const SizedBox(width: 8),
                                       Center(
-                                        child: service['payments'][0]
-                                                    ['factura_img'] ==
-                                                null
-                                            ? GestureDetector(
-                                                onTap: () {
-                                                  setState(() {
-                                                    selectPay =
-                                                        service['payments'][0]
-                                                                ['id']
-                                                            .toString();
-                                                  });
-                                                  showPopUp();
-                                                },
-                                                child: Container(
-                                                  padding: const EdgeInsets
-                                                      .symmetric(
-                                                      horizontal: 15,
-                                                      vertical: 10),
-                                                  decoration: BoxDecoration(
-                                                      color: Colors.green,
-                                                      borderRadius:
-                                                          BorderRadius.circular(
-                                                              5)),
-                                                  child: const Text(
-                                                    'Cargar',
-                                                    style:
-                                                        TextStyle(fontSize: 13),
+                                          child: service['payments'][0]
+                                                      ['factura_img'] ==
+                                                  null
+                                              ? GestureDetector(
+                                                  onTap: () {
+                                                    setState(() {
+                                                      selectPay =
+                                                          service['payments'][0]
+                                                                  ['id']
+                                                              .toString();
+                                                    });
+                                                    showPopUp();
+                                                  },
+                                                  child: Container(
+                                                    padding: const EdgeInsets
+                                                        .symmetric(
+                                                        horizontal: 15,
+                                                        vertical: 10),
+                                                    decoration: BoxDecoration(
+                                                        color: Colors.green,
+                                                        borderRadius:
+                                                            BorderRadius
+                                                                .circular(5)),
+                                                    child: const Text(
+                                                      'Cargar',
+                                                      style: TextStyle(
+                                                          fontSize: 13),
+                                                    ),
                                                   ),
-                                                ),
-                                              )
-                                            : const Text(
-                                                'factura enviada',
-                                                style: TextStyle(
-                                                  fontSize: 13,
-                                                  color: Color.fromARGB(
-                                                      234, 223, 193, 10),
-                                                ),
-                                              ),
-                                      ),
+                                                )
+                                              : GestureDetector(
+                                                  onTap: () {},
+                                                  child: Container(
+                                                    padding: const EdgeInsets
+                                                        .symmetric(
+                                                        horizontal: 15,
+                                                        vertical: 10),
+                                                    decoration: BoxDecoration(
+                                                        color: const Color
+                                                            .fromARGB(
+                                                            234, 223, 193, 10),
+                                                        borderRadius:
+                                                            BorderRadius
+                                                                .circular(5)),
+                                                    child: const Text(
+                                                      'Enviada',
+                                                      style: TextStyle(
+                                                          fontSize: 13),
+                                                    ),
+                                                  ),
+                                                )),
                                     ],
                                   ),
                                 ],

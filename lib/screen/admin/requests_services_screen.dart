@@ -34,7 +34,7 @@ class RequestsServicesScreenState extends State<RequestsServicesScreen> {
   String endDate = DateTime.now().toLocal().toIso8601String().split('T')[0];
   late Map<String, dynamic> userData;
   bool existTechnical = false;
-  final socket = IO.io('http://10.0.2.2:3032',
+  final socket = IO.io('https://serviciosmap-backend-production.up.railway.app',
       IO.OptionBuilder().setTransports(['websocket']).enableForceNew().build());
 
   List<dynamic> usersOnline = [];

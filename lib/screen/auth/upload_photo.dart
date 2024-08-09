@@ -96,6 +96,9 @@ class _UploadPhotoState extends State<UploadPhoto> {
           content: Text('Por favor, selecciona una imagen primero'),
         ),
       );
+      setState(() {
+        _isLoading = false;
+      });
       return;
     }
 

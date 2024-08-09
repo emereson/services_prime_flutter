@@ -9,17 +9,16 @@ import 'package:tecnyapp_flutter/utils/app_sanck_bar.dart';
 
 class FunctionsStarOrRepair {
   static Future<void> createRepair(
-    BuildContext context,
-    Map<String, dynamic> userData,
-    Map<String, dynamic> proposal,
-    Map<String, dynamic> proforma,
-    List<dynamic> panoramicaImages,
-    List<dynamic> modeloImages,
-    List<dynamic> averiasImages,
-    List<dynamic> materialesImages,
-    List<dynamic> instalationImages,
-    final ValueChanged<bool> onPayChanged,
-  ) async {
+      BuildContext context,
+      Map<String, dynamic> userData,
+      Map<String, dynamic> proposal,
+      Map<String, dynamic> proforma,
+      List<dynamic> panoramicaImages,
+      List<dynamic> modeloImages,
+      List<dynamic> averiasImages,
+      List<dynamic> materialesImages,
+      List<dynamic> instalationImages,
+      getProposal) async {
     final url = Uri.parse('${Config.apiUrl}/repair');
     var request = http.MultipartRequest('POST', url);
 
@@ -134,6 +133,7 @@ class FunctionsStarOrRepair {
         AppSnackbar.showError(
             context, 'Las imagenes se guardaron correctamente');
       }
+      getProposal();
     } else {
       final errorResponse = json.decode(response.body);
       throw Exception(

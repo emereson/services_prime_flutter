@@ -36,7 +36,7 @@ class TechniciansScreenState extends State<TechniciansScreen> {
   bool existTechnical = false;
   bool cv = false;
 
-  final socket = IO.io('http://10.0.2.2:3032',
+  final socket = IO.io('https://serviciosmap-backend-production.up.railway.app',
       IO.OptionBuilder().setTransports(['websocket']).enableForceNew().build());
 
   @override

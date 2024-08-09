@@ -27,7 +27,7 @@ class _RequestListScreenState extends State<RequestListScreen> {
   bool isLocationRetrieved = false;
   bool _viewScreen = false;
   late GoogleMapController _mapController;
-  final socket = IO.io('http://10.0.2.2:3032',
+  final socket = IO.io('https://serviciosmap-backend-production.up.railway.app',
       IO.OptionBuilder().setTransports(['websocket']).enableForceNew().build());
   late Map<String, dynamic> userData = {};
 
