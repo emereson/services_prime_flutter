@@ -4,7 +4,6 @@ import 'package:tecnyapp_flutter/components/tecnichal/sharingLocation/customer_c
 import 'package:tecnyapp_flutter/components/tecnichal/sharingLocation/proforma.dart';
 import 'package:tecnyapp_flutter/config.dart';
 import 'package:tecnyapp_flutter/screen/technicalScreen/request_list_screen.dart';
-import 'package:tecnyapp_flutter/screen/technicalScreen/start_of_repair.dart';
 import 'package:tecnyapp_flutter/service/auth/user_data_service.dart';
 import 'package:tecnyapp_flutter/service/location/location_service.dart';
 import 'package:tecnyapp_flutter/service/waiting_for_payment.dart';
