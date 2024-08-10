@@ -44,7 +44,13 @@ class _RequestListScreenState extends State<RequestListScreen> {
       }
     });
     Timer.periodic(const Duration(seconds: 10), (Timer timer) {
-      sendLocation(_myLocation);
+      socket.emit('sendTechnicalLocation', {
+        'technical': userData,
+        'location': {
+          'latitude': _myLocation.latitude.toString(),
+          'longitude': _myLocation.longitude.toString(),
+        },
+      });
     });
   }
 
@@ -99,16 +105,6 @@ class _RequestListScreenState extends State<RequestListScreen> {
     _mapController.animateCamera(CameraUpdate.newLatLngZoom(_myLocation, 17.0));
   }
 
-  void sendLocation(LatLng location) async {
-    socket.emit('sendTechnicalLocation', {
-      'technical': userData,
-      'location': {
-        'latitude': _myLocation.latitude.toString(),
-        'longitude': _myLocation.longitude.toString(),
-      },
-    });
-  }
-
   @override
   Widget build(BuildContext context) {
     if (_viewScreen) {
@@ -148,7 +144,6 @@ class _RequestListScreenState extends State<RequestListScreen> {
                                     _mapController.animateCamera(
                                       CameraUpdate.newLatLng(_myLocation),
                                     );
-                                    sendLocation(_myLocation);
                                   }
                                   return GoogleMap(
                                     onMapCreated: _onMapCreated,

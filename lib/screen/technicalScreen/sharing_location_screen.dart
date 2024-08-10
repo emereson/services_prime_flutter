@@ -164,14 +164,7 @@ class SharingLocationScreenState extends State<SharingLocationScreen>
 
       final response = await http.get(url);
 
-      if (response.statusCode == 200) {
-        if (mounted) {
-          Navigator.pushReplacement(
-            context,
-            MaterialPageRoute(builder: (context) => const StartOfRepair()),
-          );
-        }
-      } else {
+      if (response.statusCode != 200) {
         setState(() {
           viewScreen = true;
         });

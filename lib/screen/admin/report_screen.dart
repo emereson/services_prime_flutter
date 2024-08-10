@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'dart:io';
+import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:tecnyapp_flutter/config.dart';
@@ -216,34 +217,24 @@ class _ReportScreenState extends State<ReportScreen> {
     if (status.isGranted) {
       final response = await http.get(Uri.parse(url));
 
+      print('object$url');
+
       if (response.statusCode == 200) {
         // Usa el directorio de descargas
-        Directory? downloadsDirectory =
-            Directory('/storage/emulated/0/Download');
-        if (!await downloadsDirectory.exists()) {
-          await downloadsDirectory.create(recursive: true);
-        }
+        final filePath = await FilePicker.platform.saveFile(
+          dialogTitle: 'Selecciona la ubicación para guardar el archivo',
+          fileName: fileName,
+          type: FileType.custom,
+          allowedExtensions: ['xlsx'],
+        );
 
-        String filePath = '${downloadsDirectory.path}/$fileName';
-        final file = File(filePath);
-        await file.writeAsBytes(response.bodyBytes);
-
-        if (context.mounted) {
-          final localNotifications =
-              Provider.of<LocalNotifications>(context, listen: false);
-
-          localNotifications.showNotification(
-            title: 'Descarga completa',
-            body:
-                'El archivo ha sido descargado exitosamente en la carpeta de descargas',
-          );
+        if (filePath != null) {
+          final file = File(filePath);
+          await file.writeAsBytes(response.bodyBytes);
         }
       } else {
-        print(
-            'Error al descargar el archivo. Código de estado: ${response.statusCode}');
+        print('object${response.body}');
       }
-    } else {
-      print('Permiso de almacenamiento denegado.');
     }
   }
 

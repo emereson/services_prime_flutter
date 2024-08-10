@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:tecnyapp_flutter/components/admin/dashboard_grid_item.dart';
 import 'package:tecnyapp_flutter/screen/admin/claims_screen.dart';
@@ -7,16 +9,14 @@ import 'package:tecnyapp_flutter/screen/admin/facturas_screen.dart';
 import 'package:tecnyapp_flutter/screen/admin/report_screen.dart';
 import 'package:tecnyapp_flutter/screen/admin/requests_services_screen.dart';
 import 'package:tecnyapp_flutter/screen/admin/technicians_screen.dart';
+import 'package:tecnyapp_flutter/service/auth/user_data_service.dart';
 import 'package:tecnyapp_flutter/widgets/drawer/my_drawer.dart';
 // ignore: library_prefixes
 import 'package:socket_io_client/socket_io_client.dart' as IO;
 
 class DashboardScreen extends StatefulWidget {
-  final Map<String, dynamic>? userData;
-
   const DashboardScreen({
     super.key,
-    required this.userData,
   });
 
   @override
@@ -26,16 +26,27 @@ class DashboardScreen extends StatefulWidget {
 class _DashboardScreenState extends State<DashboardScreen> {
   final socket = IO.io('https://serviciosmap-backend-production.up.railway.app',
       IO.OptionBuilder().setTransports(['websocket']).enableForceNew().build());
+  late Map<String, dynamic> userData = {};
 
   @override
   void initState() {
     super.initState();
-    initializeSocket();
+    _loadUserData();
+  }
+
+  Future<void> _loadUserData() async {
+    final userJsonString = await UserDataService.getUserData();
+    if (userJsonString != null) {
+      setState(() {
+        userData = jsonDecode(userJsonString);
+      });
+      initializeSocket();
+    }
   }
 
   void initializeSocket() {
     socket.onConnect((_) {
-      socket.emit('registerClient', widget.userData?['id']);
+      socket.emit('registerClient', userData['id']);
     });
   }
 
@@ -109,7 +120,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
               ),
               DashboardGridItem(
                 imagePath: Icons.content_paste_sharp,
-                title: 'cargar boletas y facturas',
+                title: 'Cargar boletas y facturas',
                 onTap: () {
                   Navigator.push(
                     context,

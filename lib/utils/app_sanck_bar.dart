@@ -20,4 +20,17 @@ class AppSnackbar {
       ),
     );
   }
+
+  static void showMin(BuildContext context, String message) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(
+          message,
+          style: const TextStyle(color: Color.fromARGB(255, 255, 255, 255)),
+        ),
+        duration: const Duration(seconds: 1),
+        backgroundColor: const Color.fromARGB(255, 59, 59, 59),
+      ),
+    );
+  }
 }

@@ -462,7 +462,9 @@ class _ClaimsScreenState extends State<ClaimsScreen> {
                   MyButton(
                     text: "Buscar",
                     colorButton: Theme.of(context).colorScheme.onPrimary,
-                    onTap: () {}, // Llamada correcta al método
+                    onTap: () {
+                      getClients();
+                    }, // Llamada correcta al método
                   ),
                 ],
               ),

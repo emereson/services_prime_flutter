@@ -8,6 +8,7 @@ import 'package:tecnyapp_flutter/components/tecnichal/StartOfRepair/functions_st
 import 'package:tecnyapp_flutter/config.dart';
 import 'package:tecnyapp_flutter/screen/technicalScreen/request_list_screen.dart';
 import 'package:tecnyapp_flutter/service/auth/user_data_service.dart';
+import 'package:tecnyapp_flutter/service/loading_page.dart';
 import 'package:tecnyapp_flutter/service/waiting_for_payment.dart';
 import 'package:tecnyapp_flutter/widgets/drawer/my_drawer.dart';
 import 'package:tecnyapp_flutter/widgets/my_button.dart';
@@ -420,6 +421,7 @@ class _StartOfRepairState extends State<StartOfRepair> {
                   if (proposal['service_request']['statusPay'] ==
                       'esperando pago')
                     const WaitingForPayment(),
+                  if (isLoading) const LoadingPage(),
                 ],
               ),
             )

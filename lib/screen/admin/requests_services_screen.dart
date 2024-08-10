@@ -1,5 +1,9 @@
 import 'dart:convert';
+import 'dart:io';
 import 'dart:math';
+import 'package:file_picker/file_picker.dart';
+
+import 'package:excel/excel.dart' as excel;
 import 'package:flutter/material.dart';
 import 'package:tecnyapp_flutter/components/admin/requests_services/details/details_request_service.dart';
 import 'package:tecnyapp_flutter/config.dart';
@@ -167,87 +171,167 @@ class RequestsServicesScreenState extends State<RequestsServicesScreen> {
       builder: (BuildContext context) {
         return AlertDialog(
           title: const Text('Técnicos cercanos al servicio'),
-          content: Column(
-            mainAxisSize: MainAxisSize.min, // Ajusta el tamaño de la columna
-            children: [
-              const Text('Listado de técnicos cercanos al servicio solicitado'),
-              const SizedBox(height: 20),
-              ...nearbyTechnicals.map<Widget>((technical) {
-                return Padding(
-                  padding: const EdgeInsets.only(bottom: 10),
-                  child: Container(
-                    decoration: BoxDecoration(
-                      color: Theme.of(context).colorScheme.tertiary,
-                      border: Border.all(
-                        width: 1.0,
-                      ),
-                      borderRadius: BorderRadius.circular(10.0),
-                    ),
-                    padding: const EdgeInsets.all(10),
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Row(
-                          children: [
-                            Text('${technical['technical']['name']}',
-                                style: const TextStyle(fontSize: 12)),
-                            const SizedBox(width: 10),
-                            Text('${technical['technical']['phone_number']}',
-                                style: const TextStyle(fontSize: 12)),
-                          ],
+          content: SingleChildScrollView(
+            child: Column(
+              mainAxisSize: MainAxisSize.min, // Ajusta el tamaño de la columna
+              children: [
+                const Text(
+                    'Listado de técnicos cercanos al servicio solicitado'),
+                const SizedBox(height: 20),
+                ...nearbyTechnicals.map<Widget>((technical) {
+                  return Padding(
+                    padding: const EdgeInsets.only(bottom: 10),
+                    child: Container(
+                      decoration: BoxDecoration(
+                        color: Theme.of(context).colorScheme.tertiary,
+                        border: Border.all(
+                          width: 1.0,
                         ),
-                        const SizedBox(height: 3),
-                        GestureDetector(
-                          onTap: () async {
-                            final latitude = technical['location']['latitude'];
-                            final longitude =
-                                technical['location']['longitude'];
-                            final googleMapsUrl = Uri.parse(
-                                'https://www.google.com/maps/search/?api=1&query=$latitude,$longitude');
+                        borderRadius: BorderRadius.circular(10.0),
+                      ),
+                      padding: const EdgeInsets.all(10),
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Row(
+                            children: [
+                              Text('${technical['technical']['name']}',
+                                  style: const TextStyle(fontSize: 12)),
+                              const SizedBox(width: 10),
+                              Text('${technical['technical']['phone_number']}',
+                                  style: const TextStyle(fontSize: 12)),
+                            ],
+                          ),
+                          const SizedBox(height: 3),
+                          GestureDetector(
+                            onTap: () async {
+                              final latitude =
+                                  technical['location']['latitude'];
+                              final longitude =
+                                  technical['location']['longitude'];
+                              final googleMapsUrl = Uri.parse(
+                                  'https://www.google.com/maps/search/?api=1&query=$latitude,$longitude');
 
-                            if (await canLaunchUrl(googleMapsUrl)) {
-                              await launchUrl(googleMapsUrl,
-                                  mode: LaunchMode.externalApplication);
-                            } else {
-                              throw 'No se pudo abrir Google Maps';
-                            }
-                          },
-                          child: Text(
-                            'coordenadas: ${technical['location']['latitude']} ${technical['location']['longitude']}',
-                            style: const TextStyle(
-                              fontSize: 14,
-                              color: Color.fromARGB(234, 223, 193, 10),
+                              if (await canLaunchUrl(googleMapsUrl)) {
+                                await launchUrl(googleMapsUrl,
+                                    mode: LaunchMode.externalApplication);
+                              } else {
+                                throw 'No se pudo abrir Google Maps';
+                              }
+                            },
+                            child: Text(
+                              'coordenadas: ${technical['location']['latitude']} ${technical['location']['longitude']}',
+                              style: const TextStyle(
+                                fontSize: 14,
+                                color: Color.fromARGB(234, 223, 193, 10),
+                              ),
                             ),
                           ),
-                        ),
-                      ],
+                        ],
+                      ),
                     ),
-                  ),
-                );
-              }), // Convierte la lista a un Widget List
-            ],
+                  );
+                }), // Convierte la lista a un Widget List
+              ],
+            ),
           ),
           actions: [
-            Center(
-              child: TextButton(
-                style: TextButton.styleFrom(
-                  foregroundColor: Colors.white, // Color del texto
-                  backgroundColor: Colors.red, // Color de fondo
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(8),
-                  ),
+            TextButton(
+              style: TextButton.styleFrom(
+                foregroundColor: Colors.white,
+                backgroundColor: Colors.blue,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(8),
                 ),
-                onPressed: () {
-                  Navigator.of(context).pop();
-                },
-                child: const Text('Cerrar'),
               ),
+              onPressed: () {
+                exportToExcel(nearbyTechnicals);
+              },
+              child: const Text('Exportar a Excel'),
+            ),
+            TextButton(
+              style: TextButton.styleFrom(
+                foregroundColor: Colors.white, // Color del texto
+                backgroundColor: Colors.red, // Color de fondo
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(8),
+                ),
+              ),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+              child: const Text('Cerrar'),
             ),
           ],
         );
       },
     );
+  }
+
+  Future<void> exportToExcel(List<dynamic> nearbyTechnicals) async {
+    // Crear un nuevo archivo Excel
+    var excelFile = excel.Excel.createExcel();
+    var sheet = excelFile['Técnicos Cercanos'];
+
+    // Añadir encabezados
+    sheet.appendRow([
+      const excel.TextCellValue('Nombre'),
+      const excel.TextCellValue('Teléfono'),
+      const excel.TextCellValue('Latitud'),
+      const excel.TextCellValue('Longitud'),
+    ]);
+
+    // Añadir datos de los técnicos
+    for (var technical in nearbyTechnicals) {
+      sheet.appendRow([
+        excel.TextCellValue(technical['technical']['name'] ?? ''),
+        excel.TextCellValue(technical['technical']['phone_number'] ?? ''),
+        excel.TextCellValue(technical['location']['latitude'] ?? ''),
+        excel.TextCellValue(technical['location']['longitude'] ?? ''),
+      ]);
+    }
+
+    final fileBytes = excelFile.save();
+
+    // Verificar si se generaron datos
+    if (fileBytes == null || fileBytes.isEmpty) {
+      print('No hay datos para exportar.');
+      return;
+    }
+
+    // Obtener la fecha actual y formatearla
+    final now = DateTime.now();
+    final formattedDate =
+        "${now.year}-${now.month.toString().padLeft(2, '0')}-${now.day.toString().padLeft(2, '0')}_${now.hour.toString().padLeft(2, '0')}_${now.minute.toString().padLeft(2, '0')}_${now.second.toString().padLeft(2, '0')}";
+
+    // Permitir al usuario seleccionar la ubicación y el nombre para guardar el archivo
+    final result = await FilePicker.platform.saveFile(
+      dialogTitle: 'Selecciona la ubicación para guardar el archivo',
+      fileName: 'TecnicosCercanos_$formattedDate.xlsx',
+      type: FileType.custom,
+      allowedExtensions: ['xlsx'],
+    );
+
+    if (result == null) {
+      print('No se seleccionó ningún archivo.');
+    } else {
+      try {
+        // Imprimir la ruta del archivo para depuración
+        print('Ruta seleccionada: $result');
+
+        // Verificar si la ruta es válida
+        final file = File(result);
+        if (await file.exists()) {
+          await file.writeAsBytes(fileBytes);
+          print('Archivo Excel guardado en: $result');
+        } else {
+          print('El archivo seleccionado no es válido.');
+        }
+      } catch (e) {
+        print('Error al guardar el archivo: $e');
+      }
+    }
   }
 
   @override

@@ -444,15 +444,17 @@ class _DetailsRequestServiceState extends State<DetailsRequestService> {
                                 mainAxisAlignment: MainAxisAlignment.start,
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
-                                  Text(
-                                    '${proformaData['type_service']}/${proformaData['category']}/${proformaData['products']}',
-                                    style: TextStyle(
-                                      color: Theme.of(context)
-                                          .colorScheme
-                                          .onSecondary,
-                                      fontSize: 16,
-                                    ),
-                                  ),
+                                  proformaData['type_service'] != null
+                                      ? Text(
+                                          '${proformaData['type_service']}/${proformaData['category']}/${proformaData['products']}',
+                                          style: TextStyle(
+                                            color: Theme.of(context)
+                                                .colorScheme
+                                                .onSecondary,
+                                            fontSize: 16,
+                                          ),
+                                        )
+                                      : const SizedBox(height: 10),
                                   const SizedBox(height: 10),
                                   const Text(
                                     'Voucher del servicio',
@@ -567,8 +569,8 @@ class _DetailsRequestServiceState extends State<DetailsRequestService> {
                         )
                       : const SizedBox.shrink(),
                 ),
-                proformaData['type_service'] != null &&
-                        repairsData.isNotEmpty &&
+                proformaData['type_service'] != null ||
+                        repairsData.isNotEmpty ||
                         payments.isNotEmpty
                     ? const SizedBox.shrink()
                     : const Text(

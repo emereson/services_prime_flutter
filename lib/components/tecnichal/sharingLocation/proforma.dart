@@ -5,6 +5,7 @@ import 'package:http/http.dart' as http;
 import 'package:tecnyapp_flutter/config.dart';
 import 'package:tecnyapp_flutter/screen/technicalScreen/start_of_repair.dart';
 import 'package:tecnyapp_flutter/service/auth/user_data_service.dart';
+import 'package:tecnyapp_flutter/utils/app_sanck_bar.dart';
 import 'package:tecnyapp_flutter/widgets/custom_expansion_tile.dart';
 import 'package:tecnyapp_flutter/widgets/label_top_textarea.dart';
 // ignore: library_prefixes
@@ -70,15 +71,27 @@ class _ProformaState extends State<Proforma> {
     }
   }
 
-  void _updateTotal() {
+  void _updateTotal(price, min, max) {
     total = 0;
+    double? priceValue = double.tryParse(price);
+    double? minValue = double.tryParse(min);
+    double? maxValue = double.tryParse(max);
 
-    controllers.forEach((key, controller) {
-      double value = double.tryParse(controller.text) ?? 0;
-      total += value;
-    });
+    if (priceValue == null ||
+        minValue == null ||
+        maxValue == null ||
+        priceValue < minValue ||
+        priceValue > maxValue) {
+      AppSnackbar.showMin(context, 'El precio debe estar entre $min y $max.');
+      return;
+    } else {
+      controllers.forEach((key, controller) {
+        double value = double.tryParse(controller.text) ?? 0;
+        total += value;
+      });
 
-    setState(() {}); // Actualizar la UI después de calcular el total
+      setState(() {});
+    }
   }
 
   void _saveProforma() {
@@ -86,28 +99,34 @@ class _ProformaState extends State<Proforma> {
   }
 
   void createProforma(BuildContext context, Map<String, dynamic> data) async {
-    final url = Uri.parse('$baseUrl/proforma');
-    final response = await http.post(
-      url,
-      body: json.encode({
-        ...data,
-        'technical_id': userData['id'],
-        'client_id': widget.proposal['client_id'],
-        'service_request_id': widget.proposal['service_request_id'],
-        'proposal_id': widget.proposal['id'],
-        'description': descriptionController.text,
-        'total': total
-      }),
-      headers: {'Content-Type': 'application/json'},
-    );
-
-    if (response.statusCode == 200) {
-      widget.socket.emit('sendPay', widget.proposal['client_id']);
+    if (total == 0) {
       if (context.mounted) {
-        Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(builder: (context) => const StartOfRepair()),
-        );
+        AppSnackbar.showError(context, 'Por favor ingresa un precio valido ');
+      }
+    } else {
+      final url = Uri.parse('$baseUrl/proforma');
+      final response = await http.post(
+        url,
+        body: json.encode({
+          ...data,
+          'technical_id': userData['id'],
+          'client_id': widget.proposal['client_id'],
+          'service_request_id': widget.proposal['service_request_id'],
+          'proposal_id': widget.proposal['id'],
+          'description': descriptionController.text,
+          'total': total
+        }),
+        headers: {'Content-Type': 'application/json'},
+      );
+
+      if (response.statusCode == 200) {
+        widget.socket.emit('sendPay', widget.proposal['client_id']);
+        if (context.mounted) {
+          Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(builder: (context) => const StartOfRepair()),
+          );
+        }
       }
     }
   }
@@ -310,7 +329,13 @@ class _ProformaState extends State<Proforma> {
                                                     }).toList(),
                                                   };
                                                 });
-                                                _updateTotal();
+                                                _updateTotal(
+                                                    controllers[systemOptionKey]
+                                                        ?.text,
+                                                    systemOption[
+                                                        'minimum_range'],
+                                                    systemOption[
+                                                        'maximum_range']);
                                               },
                                             ),
                                           ],
